@@ -1,3 +1,6 @@
+*.venv
+*.deb
+*.envrc
 *.pyc
 *.npy
 *.npz
