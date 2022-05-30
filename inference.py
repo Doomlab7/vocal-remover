@@ -164,10 +164,10 @@ def main():
     print("done")
     sf.write("{}{}_Instruments.wav".format(output_dir, basename), wave.T, sr)
 
-    print("inverse stft of vocals...", end=" ")
-    wave = spec_utils.spectrogram_to_wave(v_spec, hop_length=args.hop_length)
-    print("done")
-    sf.write("{}{}_Vocals.wav".format(output_dir, basename), wave.T, sr)
+    # print("inverse stft of vocals...", end=" ")
+    # wave = spec_utils.spectrogram_to_wave(v_spec, hop_length=args.hop_length)
+    # print("done")
+    # sf.write("{}{}_Vocals.wav".format(output_dir, basename), wave.T, sr)
 
     if args.output_image:
         image = spec_utils.spectrogram_to_image(y_spec)
