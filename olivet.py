@@ -1,9 +1,13 @@
 import subprocess
 from pathlib import Path
 
-home = Path("/tmp/olivet/Olivet Bible/Worship/Music")
+### I CAN'T WRITE TO THE NAS... WTF?
 
-target = Path("/tmp/olivet/Olivet Bible/Worship/Instumental from Nic")
+# home = Path("/tmp/olivet/Olivet Bible/Worship/Music")
+home = Path("/mnt/nas/dump/Olivet Bible/Worship/Music")
+
+# target = Path("/mnt/nas/dump/Olivet Bible/Worship/Instumental from Nic")
+target = Path(home.parent, "Instrumental from Nic")
 
 for m in home.glob("**/*.mp3"):
     _path = Path(target, m.relative_to(home))
