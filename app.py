@@ -62,23 +62,21 @@ def inference_main(
     else:
         y_spec, v_spec = sp.separate(X_spec)
 
-    print("validating output directory...", end=" ")
-    output_dir = "/app-data/instrumentals/"
-    if output_dir != "":  # modifies output_dir if theres an arg specified
-        output_dir = output_dir.rstrip("/") + "/"
-        os.makedirs(output_dir, exist_ok=True)
+    print("validating output directories...", end=" ")
+    os.makedirs("/app-data/instrumentals/", exist_ok=True)
+    os.makedirs("/app-data/vocals/", exist_ok=True)
     print("done")
 
     print("inverse stft of instruments...", end=" ")
     wave = spec_utils.spectrogram_to_wave(y_spec, hop_length=hop_length)
 
     print("done")
-    sf.write("{}{}.wav".format(output_dir, basename), wave.T, sr)
+    sf.write("{}{}.wav".format("/app-data/instrumentals", basename), wave.T, sr)
 
     # eventually use diretories instead of mutating song names - should make a database easier
     # mp3 conversion
-    instrumental_output_file = f"/app-data/instrumentals/{Path(input).stem}.wav"
-    instrumental_output_mp3 = f"/app-data/instrumentals/{Path(input).stem}.mp3"
+    instrumental_output_file = f"/app-data/instrumentals/{basename}.wav"
+    instrumental_output_mp3 = f"/app-data/instrumentals/{basename}.mp3"
 
     print("converting to mp3...", end=" ")
     sound = pydub.AudioSegment.from_wav(instrumental_output_file)
@@ -88,12 +86,12 @@ def inference_main(
     print("inverse stft of vocals...", end=" ")
     wave = spec_utils.spectrogram_to_wave(v_spec, hop_length=hop_length)
     print("done")
-    sf.write("{}{}_Vocals.wav".format(output_dir, basename), wave.T, sr)
+    sf.write("{}{}.wav".format("/app-data/vocals", basename), wave.T, sr)
 
     # eventually use diretories instead of mutating song names - should make a database easier
     # mp3 conversion
-    vocal_output_file = f"/app-data/instrumentals/{Path(input).stem}.wav"
-    vocal_output_mp3 = f"/app-data/instrumentals/{Path(input).stem}.mp3"
+    vocal_output_file = f"/app-data/vocals/{basename}.wav"
+    vocal_output_mp3 = f"/app-data/vocals/{basename}.mp3"
 
     print("converting to mp3...", end=" ")
     sound = pydub.AudioSegment.from_wav(vocal_output_file)
@@ -195,7 +193,7 @@ def main():
             )
         with open(vocal_output_mp3, "rb") as f:
             st.download_button(
-                "Download Instrumentals",
+                "Download Vocals",
                 f,
                 file_name=Path(vocal_output_mp3).stem + f"{suffix}.mp3",
             )
