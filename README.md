@@ -6,7 +6,7 @@ My app doesn't do anything with the vocal tracks - if anyone is using this and w
 
 ## Getting started
 
-1. `git clone https://github.com/nicpayne713/vocal-remover-app.git`
+1. `git clone https://github.com/nicpayne713/vocal-remover-streamlit.git`
 2. `docker-compose build`
 3. `docker-compose up`
 4. Go to [http://localhost:8501](http://localhost:8501)
