@@ -1,0 +1,26 @@
+version: '2.4'
+
+volumes:
+  app_data:
+    name: voval-remover-app
+
+services:
+  streamlit:
+    build:
+      dockerfile: ./Dockerfile
+      context: ./
+    ports:
+      - '8501:8501'
+    volumes:
+      - app_data:/app-data
+    environment:
+      - USER_ID=1000
+      - GROUP_ID=1000
+    env_file: .env
+    labels:
+      traefik.enable: "true"
+      traefik.http.routers.vocal_remover_app.rule: "Host(`vocal-remover-app.${DOMAIN}`)"
+      traefik.http.routers.vocal_remover_app.tls.certresolver: "letsencrypt"
+      traefik.http.routers.vocal_remover_app.tls.domains[0].main: "${DOMAIN}"
+      traefik.http.routers.vocal_remover_app.tls.domains[0].sans: "*.${DOMAIN}"
+      traefik.http.services.vocal_remover_app.loadbalancer.server.port: "8501"
