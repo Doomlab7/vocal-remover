@@ -86,7 +86,7 @@ def inference_main(
     print("done")
 
     print("inverse stft of vocals...", end=" ")
-    wave = spec_utils.spectrogram_to_wave(v_spec, hop_length=args.hop_length)
+    wave = spec_utils.spectrogram_to_wave(v_spec, hop_length=hop_length)
     print("done")
     sf.write("{}{}_Vocals.wav".format(output_dir, basename), wave.T, sr)
 
