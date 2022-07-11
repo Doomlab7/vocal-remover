@@ -71,12 +71,11 @@ def inference_main(
     wave = spec_utils.spectrogram_to_wave(y_spec, hop_length=hop_length)
 
     print("done")
-    sf.write("{}{}.wav".format("/app-data/instrumentals/", basename), wave.T, sr)
-
     # eventually use diretories instead of mutating song names - should make a database easier
     # mp3 conversion
     instrumental_output_file = f"/app-data/instrumentals/{basename}.wav"
     instrumental_output_mp3 = f"/app-data/instrumentals/{basename}.mp3"
+    sf.write(instrumental_output_file, wave.T, sr)
 
     print("converting to mp3...", end=" ")
     sound = pydub.AudioSegment.from_wav(instrumental_output_file)
@@ -86,12 +85,12 @@ def inference_main(
     print("inverse stft of vocals...", end=" ")
     wave = spec_utils.spectrogram_to_wave(v_spec, hop_length=hop_length)
     print("done")
-    sf.write("{}{}.wav".format("/app-data/vocals/", basename), wave.T, sr)
-
     # eventually use diretories instead of mutating song names - should make a database easier
     # mp3 conversion
     vocal_output_file = f"/app-data/vocals/{basename}.wav"
     vocal_output_mp3 = f"/app-data/vocals/{basename}.mp3"
+
+    sf.write(vocal_output_file, wave.T, sr)
 
     print("converting to mp3...", end=" ")
     sound = pydub.AudioSegment.from_wav(vocal_output_file)
