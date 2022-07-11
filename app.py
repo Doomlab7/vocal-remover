@@ -6,14 +6,15 @@ from pathlib import Path
 from threading import current_thread
 
 import librosa
-import numpy as np  # type: ignore
-import pydub  # type: ignore
-import soundfile as sf  # type: ignore
-import streamlit as st  # type: ignore
-import torch  # type: ignore
+import numpy as np
+import pydub
+import soundfile as sf
+import streamlit as st
+import torch
+from streamlit.scriptrunner.script_run_context import SCRIPT_RUN_CONTEXT_ATTR_NAME
+
 from inference import Separator
 from lib import nets, spec_utils
-from streamlit.scriptrunner.script_run_context import SCRIPT_RUN_CONTEXT_ATTR_NAME
 
 MODEL_PATH = "/app/vocal-remover/models/baseline.pth"
 
@@ -76,20 +77,30 @@ def inference_main(
 
     # eventually use diretories instead of mutating song names - should make a database easier
     # mp3 conversion
-    output_file = f"/app-data/instrumentals/{Path(input).stem}.wav"
-    output_mp3 = f"/app-data/instrumentals/{Path(input).stem}.mp3"
+    instrumental_output_file = f"/app-data/instrumentals/{Path(input).stem}.wav"
+    instrumental_output_mp3 = f"/app-data/instrumentals/{Path(input).stem}.mp3"
 
     print("converting to mp3...", end=" ")
-    sound = pydub.AudioSegment.from_wav(output_file)
-    sound.export(output_mp3, format="mp3")
+    sound = pydub.AudioSegment.from_wav(instrumental_output_file)
+    sound.export(instrumental_output_mp3, format="mp3")
     print("done")
 
-    return output_mp3
+    print("inverse stft of vocals...", end=" ")
+    wave = spec_utils.spectrogram_to_wave(v_spec, hop_length=args.hop_length)
+    print("done")
+    sf.write("{}{}_Vocals.wav".format(output_dir, basename), wave.T, sr)
 
-    # print("inverse stft of vocals...", end=" ")
-    # wave = spec_utils.spectrogram_to_wave(v_spec, hop_length=args.hop_length)
-    # print("done")
-    # sf.write("{}{}_Vocals.wav".format(output_dir, basename), wave.T, sr)
+    # eventually use diretories instead of mutating song names - should make a database easier
+    # mp3 conversion
+    vocal_output_file = f"/app-data/instrumentals/{Path(input).stem}.wav"
+    vocal_output_mp3 = f"/app-data/instrumentals/{Path(input).stem}.mp3"
+
+    print("converting to mp3...", end=" ")
+    sound = pydub.AudioSegment.from_wav(vocal_output_file)
+    sound.export(vocal_output_mp3, format="mp3")
+    print("done")
+
+    return instrumental_output_mp3, vocal_output_mp3
 
 
 @contextmanager
@@ -127,7 +138,9 @@ def st_stderr(dst):
 
 
 def main():
-    output_mp3 = None
+    instrumental_output_mp3 = ""
+    vocal_output_mp3 = ""
+
     with st.form("song_form"):
         data = st.file_uploader("Upload mp3 to split instrumentals from", type=["mp3"])
         use_tta = st.checkbox(
@@ -150,31 +163,43 @@ def main():
                 # allow listening to song through app as sanity check
                 # st.audio(audio_bytes, format="audio/mp3")
             with st_stdout("code"):
-                output_mp3 = inference_main(f"/app-data/{data.name}")
+                instrumental_output_mp3, vocal_output_mp3 = inference_main(
+                    f"/app-data/{data.name}"
+                )
 
-            with open(output_mp3, "rb") as f:
-                output_bytes = f.read()
+            with open(instrumental_output_mp3, "rb") as f:
+                instrumental_output_bytes = f.read()
             # allow listening to song through app as sanity check
-            st.write("Have a listen!")
-            st.audio(output_bytes, format="audio/mp3")
+            st.write("Have a listen to the instrumental!")
+            st.audio(instrumental_output_bytes, format="audio/mp3")
+
+            with open(vocal_output_mp3, "rb") as f:
+                vocal_output_bytes = f.read()
+            # allow listening to song through app as sanity check
+            st.write("Have a listen to the vocals!")
+            st.audio(vocal_output_bytes, format="audio/mp3")
 
     # TODO: download it...
     st.markdown("### Once the song is split you will be able to download below")
-    # while output_mp3 is None:
-    #     sleep(1)
     try:
         suffix = "-Instrumental"
         if use_tta:
             suffix += ".tta"
         if use_postprocess:
             suffix += ".postprocess"
-        with open(output_mp3, "rb") as f:
+        with open(instrumental_output_mp3, "rb") as f:
             st.download_button(
                 "Download Instrumentals",
                 f,
-                file_name=Path(output_mp3).stem + f"{suffix}.mp3",
+                file_name=Path(instrumental_output_mp3).stem + f"{suffix}.mp3",
             )
-    except Exception:
+        with open(vocal_output_mp3, "rb") as f:
+            st.download_button(
+                "Download Instrumentals",
+                f,
+                file_name=Path(vocal_output_mp3).stem + f"{suffix}.mp3",
+            )
+    except FileNotFoundError:
         with st_stdout("error"):
             print("Still waiting...")
 
@@ -182,6 +207,6 @@ def main():
 if __name__ == "__main__":
     st.markdown("# Audacity who??")
     st.markdown(
-        "**Upload one mp3 at a time and the vocal-remover app will strip the instrumentals. There are 2 options to play with and you can listen to the instrumental track from here before downloading**"
+        "**Upload one mp3 at a time and the vocal-remover app will strip the instrumentals from the vocals. There are 2 options to play with and you can listen to the instrumental/vocal tracks separately from here before downloading**"
     )
     main()
