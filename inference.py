@@ -5,16 +5,14 @@ import librosa
 import numpy as np
 import soundfile as sf
 import torch
-from tqdm import tqdm
+from stqdm import stqdm
 
-from lib import dataset
-from lib import nets
-from lib import spec_utils
-from lib import utils
+from lib import dataset, nets, spec_utils
+
+# from tqdm import tqdm
 
 
 class Separator(object):
-
     def __init__(self, model, device, batchsize, cropsize, postprocess=False):
         self.model = model
         self.offset = model.offset
@@ -37,8 +35,9 @@ class Separator(object):
         with torch.no_grad():
             mask = []
             # To reduce the overhead, dataloader is not used.
-            for i in tqdm(range(0, patches, self.batchsize)):
-                X_batch = X_dataset[i: i + self.batchsize]
+            # for i in tqdm(range(0, patches, self.batchsize)):
+            for i in stqdm(range(0, patches, self.batchsize)):
+                X_batch = X_dataset[i : i + self.batchsize]
                 X_batch = torch.from_numpy(X_batch).to(self.device)
 
                 pred = self.model.predict_mask(X_batch)
