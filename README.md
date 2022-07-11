@@ -4,20 +4,20 @@ This is my [streamlit]() app based on [tsurumeso's vocal-remover project](https:
 
 My app doesn't do anything with the vocal tracks - if anyone is using this and wants it let me know and I'll add it.
 
-# Getting started
+## Getting started
 
 1. `git clone https://github.com/nicpayne713/vocal-remover-app.git`
 2. `docker-compose build`
 3. `docker-compose up`
 4. Go to [http://localhost:8501](http://localhost:8501)
 
-# Traefik
+## Traefik
 
 I put this behind my reverse proxy - those labels are in the docker-compose file, you can edit for your own use case or delete them
 
-# TODOs
+## TODOs
 
-[] - python venv in docker 
+[] - python venv in docker
 [] - mp4 example in readme
 [] - deploy on heroku or something as example?
 [] - tweet tweet
