@@ -16,7 +16,7 @@ from streamlit.scriptrunner.script_run_context import SCRIPT_RUN_CONTEXT_ATTR_NA
 from inference import Separator
 from lib import nets, spec_utils
 
-MODEL_PATH = "/app/vocal-remover/models/baseline.pth"
+MODEL_PATH = "/app/models/baseline.pth"
 
 
 def inference_main(
