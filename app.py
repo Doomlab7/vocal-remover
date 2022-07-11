@@ -71,7 +71,7 @@ def inference_main(
     wave = spec_utils.spectrogram_to_wave(y_spec, hop_length=hop_length)
 
     print("done")
-    sf.write("{}{}.wav".format("/app-data/instrumentals", basename), wave.T, sr)
+    sf.write("{}{}.wav".format("/app-data/instrumentals/", basename), wave.T, sr)
 
     # eventually use diretories instead of mutating song names - should make a database easier
     # mp3 conversion
@@ -86,7 +86,7 @@ def inference_main(
     print("inverse stft of vocals...", end=" ")
     wave = spec_utils.spectrogram_to_wave(v_spec, hop_length=hop_length)
     print("done")
-    sf.write("{}{}.wav".format("/app-data/vocals", basename), wave.T, sr)
+    sf.write("{}{}.wav".format("/app-data/vocals/", basename), wave.T, sr)
 
     # eventually use diretories instead of mutating song names - should make a database easier
     # mp3 conversion
