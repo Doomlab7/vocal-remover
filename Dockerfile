@@ -12,4 +12,4 @@ RUN apt update -y && \
 
 COPY . /app
 
-ENTRYPOINT ["streamlit", "run", "/app/vocal-remover/app.py"]
+ENTRYPOINT ["streamlit", "run", "/app/app.py"]
