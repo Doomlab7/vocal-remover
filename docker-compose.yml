@@ -24,4 +24,4 @@ services:
       traefik.http.routers.vocal_remover_app.tls.domains[0].main: "${DOMAIN}"
       traefik.http.routers.vocal_remover_app.tls.domains[0].sans: "*.${DOMAIN}"
       traefik.http.services.vocal_remover_app.loadbalancer.server.port: "8501"
-      traefik.http.middlewares.vocal_remover_app.basicauth.users: "user:$$2y$$05$$LBZka/94dyb0S/ZPqN2ixeVy..2Sok0xruiw7AhwyrbsPNd.SLF.W"
+      traefik.httprouters.vocal_remover_app.middlewares.basicauth.users: "user:$$2y$$05$$LBZka/94dyb0S/ZPqN2ixeVy..2Sok0xruiw7AhwyrbsPNd.SLF.W"
