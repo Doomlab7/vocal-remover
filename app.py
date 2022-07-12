@@ -190,6 +190,11 @@ def main():
                 f,
                 file_name=Path(instrumental_output_mp3).stem + f"{suffix}.mp3",
             )
+        suffix = "-Vocals"
+        if use_tta:
+            suffix += ".tta"
+        if use_postprocess:
+            suffix += ".postprocess"
         with open(vocal_output_mp3, "rb") as f:
             st.download_button(
                 "Download Vocals",
