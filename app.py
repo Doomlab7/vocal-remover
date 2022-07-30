@@ -44,6 +44,7 @@ def inference_main(
         input, sample_rate, False, dtype=np.float32, res_type="kaiser_fast"
     )
     basename = os.path.splitext(os.path.basename(input))[0]
+    print(f"basename is {basename}")
     print("done")
 
     if X.ndim == 1:
@@ -79,12 +80,13 @@ def inference_main(
         instrumental_filename,
         vocal_filename_wav,
         vocal_filename,
-    ) = get_filenames(basename, tta, postprocess)
+    ) = get_filenames(Path(basename).stem, tta, postprocess)
 
     sf.write(instrumental_filename_wav, wave.T, sr)
 
     print("converting to mp3...", end=" ")
     sound = pydub.AudioSegment.from_wav(instrumental_filename_wav)
+    print(f"saving {instrumental_filename}")
     sound.export(instrumental_filename, format="mp3")
     print("done")
 
@@ -117,6 +119,10 @@ def get_filenames(basename, use_tta, use_postprocess):
 
     vocal_filename = "/app-data/vocals/" + basename + f"{suffix}.mp3"
     vocal_filename_wav = "/app-data/vocals/" + basename + f"{suffix}.wav"
+
+    print(
+        f"{instrumental_filename_wav}, {instrumental_filename}, {vocal_filename_wav}, {vocal_filename}"
+    )
 
     return (
         instrumental_filename_wav,
@@ -161,6 +167,10 @@ def st_stderr(dst):
 
 
 def check_if_already_processed(instrumental_filename, vocal_filename):
+    with st_stdout("code"):
+        print(
+            f"checking if {instrumental_filename} and {vocal_filename} already processed"
+        )
     if Path(instrumental_filename).exists() and Path(vocal_filename).exists():
         return True
     return False
@@ -175,13 +185,17 @@ def check_and_download(
             st.download_button(
                 "Download Instrumentals",
                 f,
-                file_name=instrumental_filename,
+                file_name=Path(instrumental_filename).stem
+                + "-Instrumental"
+                + Path(instrumental_filename).suffix,
             )
         with open(vocal_filename, "rb") as f:
             st.download_button(
                 "Download Vocals",
                 f,
-                file_name=vocal_filename,
+                file_name=Path(vocal_filename).stem
+                + "-Vocals"
+                + Path(vocal_filename).suffix,
             )
     except FileNotFoundError:
         raise FileNotFoundError
@@ -190,6 +204,10 @@ def check_and_download(
 def main():
     # instrumental_output_mp3 = ""
     # vocal_output_mp3 = ""
+    instrumental_filename_wav = ""
+    instrumental_filename = ""
+    vocal_filename_wav = ""
+    vocal_filename = ""
 
     with st.form("song_form"):
         data = st.file_uploader("Upload mp3 to split instrumentals from", type=["mp3"])
@@ -201,36 +219,40 @@ def main():
         )
 
         submitted = st.form_submit_button("Punch it Chewy!")
-        basename = data.name
-        (
-            instrumental_filename_wav,
-            instrumental_filename,
-            vocal_filename_wav,
-            vocal_filename,
-        ) = get_filenames(basename, use_tta, use_postprocess)
-
         if submitted:
+
+            basename = data.name
+            (
+                instrumental_filename_wav,
+                instrumental_filename,
+                vocal_filename_wav,
+                vocal_filename,
+            ) = get_filenames(Path(basename).stem, use_tta, use_postprocess)
+
             if check_if_already_processed(instrumental_filename, vocal_filename):
                 with st_stdout("success"):
                     print("File already processed")
             else:
 
-                with st_stdout("error"):
-                    print("Still waiting...")
+                # with st_stdout("error"):
+                #     print("Still waiting...")
 
-                with st_stdout("error"):
-                    with st_stdout("success"):
-                        print("Reading Data\n")
-                        audio_bytes = data.read()
-
-                        # write out to file until I figure out how to just pass audio_bytes to the inference script
-                        print("Saving to staging file")
-                        with open(f"/app-data/{data.name}", "wb") as outfile:
-                            outfile.write(audio_bytes)
-                        # allow listening to song through app as sanity check
-                        # st.audio(audio_bytes, format="audio/mp3")
                 with st_stdout("code"):
-                    inference_main(f"/app-data/{data.name}")
+                    print("Reading Data\n")
+                    audio_bytes = data.read()
+
+                    # write out to file until I figure out how to just pass audio_bytes to the inference script
+                    print("Saving to staging file")
+                    with open(f"/app-data/{basename}", "wb") as outfile:
+                        outfile.write(audio_bytes)
+                    # allow listening to song through app as sanity check
+                    # st.audio(audio_bytes, format="audio/mp3")
+                with st_stdout("code"):
+                    inference_main(
+                        f"/app-data/{basename}",
+                        tta=use_tta,
+                        postprocess=use_postprocess,
+                    )
 
             with open(instrumental_filename, "rb") as f:
                 instrumental_output_bytes = f.read()
