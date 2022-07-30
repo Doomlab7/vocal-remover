@@ -44,7 +44,6 @@ def inference_main(
         input, sample_rate, False, dtype=np.float32, res_type="kaiser_fast"
     )
     basename = os.path.splitext(os.path.basename(input))[0]
-    print(f"basename is {basename}")
     print("done")
 
     if X.ndim == 1:
@@ -86,7 +85,7 @@ def inference_main(
 
     print("converting to mp3...", end=" ")
     sound = pydub.AudioSegment.from_wav(instrumental_filename_wav)
-    print(f"saving {instrumental_filename}")
+
     sound.export(instrumental_filename, format="mp3")
     print("done")
 
@@ -119,10 +118,6 @@ def get_filenames(basename, use_tta, use_postprocess):
 
     vocal_filename = "/app-data/vocals/" + basename + f"{suffix}.mp3"
     vocal_filename_wav = "/app-data/vocals/" + basename + f"{suffix}.wav"
-
-    print(
-        f"{instrumental_filename_wav}, {instrumental_filename}, {vocal_filename_wav}, {vocal_filename}"
-    )
 
     return (
         instrumental_filename_wav,
@@ -169,7 +164,7 @@ def st_stderr(dst):
 def check_if_already_processed(instrumental_filename, vocal_filename):
     with st_stdout("code"):
         print(
-            f"checking if {instrumental_filename} and {vocal_filename} already processed"
+            f"checking if instrumentals and vocals exist for {Path(instrumental_filename).name}"
         )
     if Path(instrumental_filename).exists() and Path(vocal_filename).exists():
         return True
