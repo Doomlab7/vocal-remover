@@ -1,5 +1,8 @@
 FROM pytorch/pytorch
 
+ENV DEBIAN_FRONTEND noninteractive
+ENV PROTOCOL_BUFFERS_PYTHON_IMPLEMENTATION=python
+
 
 COPY requirements.txt /app/requirements.txt
 
