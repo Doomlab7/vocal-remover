@@ -7,7 +7,8 @@ RUN pip install  -r /app/requirements.txt
 
 RUN apt update -y && \
     # apt upgrade -qq -y && \
-    apt install -y libsndfile1 libgl1 libglib2.0-0 libsm6 libxrender1 libxext6
+    apt install -y libsndfile1 libgl1 libglib2.0-0 libsm6 libxrender1 libxext6 && \
+    apt upgrade -y
 
 
 COPY . /app
