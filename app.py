@@ -120,7 +120,7 @@ def get_filenames(basename, use_tta, use_postprocess):
     vocal_filename = "/app-data/vocals/" + basename + f"{suffix}.mp3"
     vocal_filename_wav = "/app-data/vocals/" + basename + f"{suffix}.wav"
 
-	
+    
     print(f"filenames: {instrumental_filename} \n {vocal_filename}")
 
     return (
@@ -199,7 +199,7 @@ def check_and_download(
     except FileNotFoundError:
         all_files = Path("/app-data").glob("*.mp3")
         all_files_str = [str(x.name) for x in all_files]
-	with st_stdout("error"):
+    with st_stdout("error"):
             print(f"{all_files_str}")
         raise FileNotFoundError
 
