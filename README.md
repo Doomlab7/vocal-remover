@@ -2,7 +2,6 @@
 
 This is my [streamlit]() app based on [tsurumeso's vocal-remover project](https://github.com/tsurumeso/vocal-remover)
 
-My app doesn't do anything with the vocal tracks - if anyone is using this and wants it let me know and I'll add it.
 
 ## Getting started
 
@@ -19,6 +18,7 @@ I put this behind my reverse proxy - those labels are in the docker-compose file
 
 [] - python venv in docker
 [] - mp4 example in readme
+[] - bug with . in filenames, like "my song feat. other artist.mp3"
 [] - deploy on heroku or something as example?
 [] - tweet tweet
 
