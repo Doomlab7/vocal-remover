@@ -6,6 +6,6 @@ librosa>=0.6.3,<0.9
 opencv_python>=4.2.0
 
 # for app
-streamlit
+streamlit~=1.8.0
 pydub
 stqdm
