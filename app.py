@@ -11,7 +11,8 @@ import pydub
 import soundfile as sf
 import streamlit as st
 import torch
-from streamlit.scriptrunner.script_run_context import SCRIPT_RUN_CONTEXT_ATTR_NAME
+from streamlit.scriptrunner.script_run_context import \
+    SCRIPT_RUN_CONTEXT_ATTR_NAME
 
 from inference import Separator
 from lib import nets, spec_utils
@@ -119,6 +120,9 @@ def get_filenames(basename, use_tta, use_postprocess):
     vocal_filename = "/app-data/vocals/" + basename + f"{suffix}.mp3"
     vocal_filename_wav = "/app-data/vocals/" + basename + f"{suffix}.wav"
 
+	
+    print(f"filenames: {instrumental_filename} \n {vocal_filename}")
+
     return (
         instrumental_filename_wav,
         instrumental_filename,
@@ -193,6 +197,10 @@ def check_and_download(
                 + Path(vocal_filename).suffix,
             )
     except FileNotFoundError:
+        all_files = Path("/app-data").glob("*.mp3")
+        all_files_str = [str(x.name) for x in all_files]
+	with st_stdout("error"):
+            print(f"{all_files_str}")
         raise FileNotFoundError
 
 
