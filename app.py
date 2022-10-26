@@ -11,8 +11,7 @@ import pydub
 import soundfile as sf
 import streamlit as st
 import torch
-from streamlit.scriptrunner.script_run_context import \
-    SCRIPT_RUN_CONTEXT_ATTR_NAME
+from streamlit.scriptrunner.script_run_context import SCRIPT_RUN_CONTEXT_ATTR_NAME
 
 from inference import Separator
 from lib import nets, spec_utils
@@ -89,6 +88,7 @@ def inference_main(
 
     sound.export(instrumental_filename, format="mp3")
     print("done")
+    print(f"convered to {instrumental_filename}")
 
     print("inverse stft of vocals...", end=" ")
     wave = spec_utils.spectrogram_to_wave(v_spec, hop_length=hop_length)
@@ -120,7 +120,6 @@ def get_filenames(basename, use_tta, use_postprocess):
     vocal_filename = "/app-data/vocals/" + basename + f"{suffix}.mp3"
     vocal_filename_wav = "/app-data/vocals/" + basename + f"{suffix}.wav"
 
-    
     print(f"filenames: {instrumental_filename} \n {vocal_filename}")
 
     return (
@@ -178,6 +177,7 @@ def check_if_already_processed(instrumental_filename, vocal_filename):
 def check_and_download(
     instrumental_filename,
     vocal_filename,
+    n_try: int = 0,
 ):
     try:
         with open(instrumental_filename, "rb") as f:
@@ -199,9 +199,12 @@ def check_and_download(
     except FileNotFoundError:
         all_files = Path("/app-data").glob("*.mp3")
         all_files_str = [str(x.name) for x in all_files]
-    with st_stdout("error"):
+        with st_stdout("error"):
             print(f"{all_files_str}")
-        raise FileNotFoundError
+            if n_try < 5:
+                check_and_download(instrumental_filename, vocal_filename, n_try + 1)
+            else:
+                raise FileNotFoundError
 
 
 def main():
