@@ -8,6 +8,7 @@ from fastapi import HTTPException
 from fastapi import Request
 from fastapi.responses import FileResponse
 from fastapi.responses import HTMLResponse
+from fastapi.responses import JSONResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from pydantic import BaseModel
@@ -72,7 +73,7 @@ async def read_root(request: Request):
         <div class="bg-white p-8 rounded shadow-md w-96">
             <h1 class="text-2xl font-semibold mb-4">File Processing App</h1>
             <!-- Add htmx attributes to the form -->
-                <form id="fileForm" hx-post="/submit" hx-target="#result" class="space-y-4">
+                <form id="fileForm" hx-post="/submit" hx-target="#result" hx-swap="outerHTML" hx-vals=".">
                     <div>
                         <label for="yt_link" class="block text-sm font-medium text-gray-700">Enter YouTube Link:</label>
                         <input type="text" id="yt_link" name="yt_link" class="mt-1 p-2 w-full border rounded-md">
@@ -83,6 +84,38 @@ async def read_root(request: Request):
                 </form>
         </div>
 
+<!-- Include htmx script -->
+<script src="https://unpkg.com/htmx.org@1.7.0/dist/htmx.js"></script>
+
+<script>
+    async function submitForm() {
+        const ytLink = document.getElementById('yt_link').value;
+
+        try {
+            // Display a loading message or spinner
+            document.getElementById('result').innerHTML = 'Processing...';
+
+            // Use HTMX to submit the form asynchronously
+            const response = await htmx.ajax('/submit', 'post', { yt_link });
+
+            // Extract relevant information from the response
+            const message = response.message || 'Request processed successfully';
+
+            // Display the message in the result div
+            document.getElementById('result').innerHTML = message;
+
+            // Clear the input field
+            document.getElementById('yt_link').value = '';
+        } catch (error) {
+            // Handle errors if needed
+            console.error('Error:', error);
+
+            // Display an error message in the result div
+            document.getElementById('result').innerHTML = 'Error processing the request. Please try again.';
+        }
+    }
+</script>
+
         <!-- Display result here -->
         <div id="result" hx-target="#result"></div>
 
@@ -92,17 +125,6 @@ async def read_root(request: Request):
                 // You can modify the request before it's sent, if needed
                 console.log("Configuring htmx request:", event.detail.xhr);
             });
-
-            function submitForm() {
-                // Optional: Add logic before the form submission
-                console.log("Before form submission");
-
-                // Submit the form using htmx
-                htmx.submit("#fileForm");
-
-                // Optional: Add logic after the form submission
-                console.log("After form submission");
-            }
         </script>
     </body>
     </html>
@@ -111,44 +133,40 @@ async def read_root(request: Request):
 
 @app.post("/submit")
 async def submit_form(yt_link: str = Form(...)):
-    # Run the subprocess command and capture the output
     try:
-        # Use subprocess.PIPE to capture the output
         result = subprocess.run(
             f"pipx run pytube {yt_link} --list",
             shell=True,
             check=True,
-            text=True,  # Capture output as text
+            text=True,
             stdout=subprocess.PIPE,
             stderr=subprocess.PIPE,
         )
 
-        # Access the captured output
         output = result.stdout
-
-        # Now you can parse the output as needed
-        # print(f"Captured output: {output}")
-
-        # Parse the output and find the max abr and corresponding itag
-        # ... (use the parsing logic from the previous example)
         itag = get_itag(output)
 
         result = subprocess.run(
             f"pipx run pytube {yt_link} --itag {itag}",
             shell=True,
             check=True,
-            text=True,  # Capture output as text
+            text=True,
             stdout=subprocess.PIPE,
             stderr=subprocess.PIPE,
         )
 
-        # Return a response
-        return {"message": f"Processing {yt_link}", "captured_output": output}
+        response_data = {"message": f"Processing {yt_link}", "captured_output": output}
+
+        # Returning JSONResponse to handle the response in a more controlled manner
+        return JSONResponse(content=response_data, status_code=200)
+
     except subprocess.CalledProcessError as e:
-        # If the subprocess command returns a non-zero exit code
         error_message = f"Error running subprocess: {e.returncode}, {e.stderr}"
         print(error_message)
-        return {"error": error_message}
+
+        # Returning an error response
+        return JSONResponse(content={"error": error_message}, status_code=500)
+
 
 # Additional route for serving the htmx library (optional)
 @app.get("/htmx.js")
