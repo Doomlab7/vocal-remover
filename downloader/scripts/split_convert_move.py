@@ -1,3 +1,4 @@
+"Splits mp4s downloaded from youtube, converts og and split to mp3, and moves to folder to be uploaded later"
 from pathlib import Path
 
 from automations import InferenceRequest
