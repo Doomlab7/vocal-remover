@@ -1,5 +1,7 @@
 from fastapi import FastAPI, Request
+import os
 from fastapi.responses import HTMLResponse
+from fastapi.responses import RedirectResponse
 from fastapi.templating import Jinja2Templates
 from fastapi.staticfiles import StaticFiles
 import subprocess
@@ -31,4 +33,19 @@ async def submit_link(link: str = Form(...)):
         output = None
         error = str(e)
 
-    return {"output": output, "error": error}
+ # You can customize the redirect URL based on the result of your script
+    reroute_url = os.environ.get("REROUTE_URL") if not error else "/error"
+
+    return HTMLResponse(content=f"""
+        <html>
+            <head>
+                <title>FastAPI Submission Box</title>
+                <link rel="stylesheet" href="{{ url_for('static', path='styles.css') }}">
+            </head>
+            <body>
+                <script>
+                    window.location.href = '{reroute_url}';
+                </script>
+            </body>
+        </html>
+    """, status_code=200, media_type="text/html")
