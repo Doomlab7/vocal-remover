@@ -1,13 +1,12 @@
-from fastapi import FastAPI, Request
 import os
-from fastapi.responses import HTMLResponse
-from fastapi.responses import RedirectResponse, Response
-from fastapi import Request
-from fastapi.templating import Jinja2Templates
-from fastapi.staticfiles import StaticFiles
-from fastapi import Request, Depends
 import subprocess
+
+from fastapi import FastAPI
 from fastapi import Form
+from fastapi import Request
+from fastapi.responses import HTMLResponse
+from fastapi.staticfiles import StaticFiles
+from fastapi.templating import Jinja2Templates
 
 app = FastAPI()
 
@@ -30,7 +29,7 @@ async def error_page(request: Request):
     return templates.TemplateResponse("error_page.html", {"request": request})
 
 
-from fastapi import Request
+
 
 @app.post("/submit_link/", response_class=HTMLResponse)
 async def submit_link(link: str = Form(...), request: Request = None):
@@ -65,3 +64,7 @@ async def submit_link(link: str = Form(...), request: Request = None):
             </body>
         </html>
     """, status_code=200, media_type="text/html")
+
+if __name__ == "__main__":
+    import uvicorn
+    uvicorn.run(app, host="0.0.0.0", port=8001)
