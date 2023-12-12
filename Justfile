@@ -1,8 +1,7 @@
-doit link: 
+download-split-upload link: 
+  echo "downloading yt video, converting, splitting, uploading"
   python ./downloader/main.py {{ link }}
 
-sc file:
-  python inference.py --input "{{ file }}"
-  echo "deesn't work cause {{ file }} has extension in it!"
-  ffmpeg -i {{ file }}_Instruments.wav "{{ file }}_Instruments.mp3"
-
+split-convert-upload-clean:
+  echo "converting for church, splitting, uploading"
+  python ./downloader/scripts/split_convert_upload_instrumental_clean.py
