@@ -1,0 +1,26 @@
+<!doctype html>
+<html>
+  <head>
+    <title>FastAPI Submission Box</title>
+    <link rel="stylesheet" href="{{ url_for('static', path='styles.css') }}" />
+  </head>
+  <body>
+    <form method="post" action="/submit_link/" enctype="multipart/form-data">
+      <label for="link">Paste a link:</label>
+      <input type="text" id="link" name="link" required />
+      <button type="submit">Submit</button>
+    </form>
+
+    {% if output %}
+    <div>
+      <h2>Output:</h2>
+      <pre>{{ output }}</pre>
+    </div>
+    {% endif %} {% if error %}
+    <div>
+      <h2>Error:</h2>
+      <pre>{{ error }}</pre>
+    </div>
+    {% endif %}
+  </body>
+</html>
