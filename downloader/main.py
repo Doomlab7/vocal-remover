@@ -33,13 +33,20 @@ uploaded_path = mp3s_path / "uploaded"
 
 if __name__ == "__main__":
 
-    raise SystemExit(1)
     logger = logging.getLogger(__name__)
 
     parser = ArgumentParser()
     parser.add_argument("link")
     args = parser.parse_args()
     link = DownloadRequest(link=args.link)
+
+    logger.info(f"Downloading: {link}")
+    logger.info("More logs")
+
+    import time
+    time.sleep(5)
+
+    raise SystemExit(1)
 
     # Download
     youget(link)
