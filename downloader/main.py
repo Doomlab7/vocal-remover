@@ -2,12 +2,12 @@ import os
 from argparse import ArgumentParser
 from pathlib import Path
 
-from automations import DownloadRequest
-from automations import InferenceRequest
-from automations import convert_mp4
-from automations import convert_wav
-from automations import run_inference
-from automations import youget
+from scripts.automations import DownloadRequest
+from scripts.automations import InferenceRequest
+from scripts.automations import convert_mp4
+from scripts.automations import convert_wav
+from scripts.automations import run_inference
+from scripts.automations import youget
 from webdav3.client import Client
 
 PASSWORD = os.environ.get("NC_PASSWORD")
