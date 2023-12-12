@@ -3,3 +3,4 @@ python-multipart
 uvicorn
 jinja2
 pydantic
+webdavclient3
