@@ -17,12 +17,12 @@ URL = os.environ.get("NC_URL")
 USER = os.environ.get("NC_USER")
 
 if __name__ == "__main__":
-    for file in Path("/home/nic/third-party/vocal-remover/downloads/just-split-convert").glob("*.mp3"):
+    for file in Path("/home/nic/personal/vocal-remover/downloads/just-split-convert").glob("*.mp3"):
         inference_data = InferenceRequest(filename=str(file))
         data = InferenceRequest(filename=str(file.with_suffix('')))
         # run inference
         run_inference(inference_data)
-    for file in Path("/home/nic/third-party/vocal-remover/downloads/just-split-convert").glob("*_Instruments.wav"):
+    for file in Path("/home/nic/personal/vocal-remover/downloads/just-split-convert").glob("*_Instruments.wav"):
         data = InferenceRequest(filename=str(file.with_suffix('')))
         # convert _instruments.wav to _instruments.mp3
         convert_wav(data)
@@ -36,7 +36,7 @@ if __name__ == "__main__":
     client = Client(options)
     client.verify = True
     # breakpoint()
-    for file in Path("/home/nic/third-party/vocal-remover/downloads/just-split-convert/").glob("*_Instruments.mp3"):
+    for file in Path("/home/nic/personal/vocal-remover/downloads/just-split-convert/").glob("*_Instruments.mp3"):
         client.upload_file(remote_path=f"/{TARGET}/{file.name}", local_path=str(file))
         # unlink after upload
         file.unlink()
