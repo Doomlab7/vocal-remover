@@ -51,7 +51,6 @@ async def run_subprocess_and_capture_output(link):
             break
 
         if stdout_data:
-            breakpoint()
             log_to_queue(f"stdout: {stdout_data.decode()}")
         if stderr_data:
             log_to_queue(f"stderr: {stderr_data.decode()}")
