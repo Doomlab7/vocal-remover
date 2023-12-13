@@ -1,6 +1,9 @@
 import re
 import subprocess
+from typing import List
+from typing import Optional
 
+import pytube
 from fastapi import HTTPException
 from pydantic import BaseModel
 
@@ -10,6 +13,20 @@ class DownloadRequest(BaseModel):
 
 class InferenceRequest(BaseModel):
     filename: str
+
+class StreamInfo(BaseModel):
+    itag: str
+    mime_type: str
+    res: Optional[str]
+    fps: Optional[str]
+    vcodec: Optional[str]
+    acodec: Optional[str]
+    progressive: bool
+    type: str
+    abr: Optional[str]
+
+class YouTubeStreamsInfo(BaseModel):
+    streams: List[StreamInfo]
 
 def convert_mp4(data: InferenceRequest):
     filename = data.filename
@@ -39,24 +56,11 @@ def convert_wav(data: InferenceRequest):
 
 def youget(data: DownloadRequest):
     try:
-        # Run pytube command to get video information
-        result = subprocess.run(f"pipx run pytube {data.link} --list", shell=True, check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        streams = pytube.YouTube(data.link).streams
+        itag = get_itag(streams)
+        filepath = pytube.YouTube(data.link).streams.get_by_itag(itag).download('/home/nic/personal/vocal-remover/downloads/raw')
 
-        # Access the stdout and stderr
-        stdout_result = result.stdout.decode('utf-8')
-        stderr_result = result.stderr.decode('utf-8')
-
-        # TODO: parse the output and find the highest quality audio itag
-        itag = get_itag(stdout_result)
-
-        # Run pytube command to download the video with the selected itag
-        result_download = subprocess.run(f"pipx run pytube {data.link} --itag {itag} --target /home/nic/third-party/vocal-remover/downloads/raw", shell=True, check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-
-        # Access the stdout and stderr of the download command
-        stdout_download = result_download.stdout.decode('utf-8')
-        stderr_download = result_download.stderr.decode('utf-8')
-
-        return {"message": "File downloaded", "stdout": stdout_result + '\n' + stdout_download, "stderr": stderr_result + '\n' + stderr_download}
+        return {"message": f"File downloaded: {filepath}"}
     except subprocess.CalledProcessError as e:
         raise HTTPException(status_code=500, detail=f"Error running pytube command: {e}")
 
@@ -72,7 +76,19 @@ def run_inference(data: InferenceRequest):
     except subprocess.CalledProcessError:
         raise HTTPException(status_code=500, detail="Error running inference script")
 
-def get_itag(output: str):
+def get_itag(streams: YouTubeStreamsInfo):
+    # Filter audio streams with mime_type "audio/mp4"
+    audio_streams = [stream for stream in streams if stream.type == "audio" and stream.mime_type == "audio/mp4"]
+
+    if not audio_streams:
+        return None  # No matching audio streams found
+
+    # Find the stream with the highest abr value
+    highest_abr_stream = max(audio_streams, key=lambda stream: int(stream.abr.replace("kbps", "") or 0), default=None)
+
+    return highest_abr_stream.itag
+
+def get_itag_from_stdout(output: str):
 # Split the output into lines
     lines = output.split("\n")
 
