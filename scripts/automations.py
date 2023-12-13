@@ -52,8 +52,6 @@ def convert_wav(data: InferenceRequest):
     except subprocess.CalledProcessError:
         raise HTTPException(status_code=500, detail="Error running ffmpeg command")
 
-
-
 def youget(data: DownloadRequest):
     try:
         streams = pytube.YouTube(data.link).streams
@@ -66,8 +64,9 @@ def youget(data: DownloadRequest):
 
 
 def run_inference(data: InferenceRequest):
+    # replace this with just imoprting the inference.main function - nesting in scripts/ made the import here basically impossible
     filename = data.filename
-    inference_script = "/home/nic/third-party/vocal-remover/.venv/vocal-remover/bin/python /home/nic/third-party/vocal-remover/inference.py --output_dir /home/nic/third-party/vocal-remover/downloads/raw/"
+    inference_script = "/home/nic/personal/vocal-remover/.venv/vocal-remover/bin/python /home/nic/personal/vocal-remover/inference.py --output_dir /home/nic/personal/vocal-remover/downloads/raw/"
 
     # Run the inference script
     try:
