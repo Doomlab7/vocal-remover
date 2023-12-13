@@ -1,15 +1,17 @@
 import logging
 import os
 from argparse import ArgumentParser
+from dataclasses import dataclass
 from pathlib import Path
 
+from webdav3.client import Client
+
+from inference import main as inference_main
 from scripts.automations import DownloadRequest
 from scripts.automations import InferenceRequest
 from scripts.automations import convert_mp4
 from scripts.automations import convert_wav
-from scripts.automations import run_inference
 from scripts.automations import youget
-from webdav3.client import Client
 
 PASSWORD = os.environ.get("NC_PASSWORD")
 TARGET = os.environ.get("NC_TARGET")
@@ -17,11 +19,9 @@ URL = os.environ.get("NC_URL")
 USER = os.environ.get("NC_USER")
 
 # Configure logging to both console and a file
-logging.basicConfig(filename='app.log', level=logging.DEBUG)
+logging.basicConfig(filename='downloader.main.log', level=logging.DEBUG, format='%(asctime)s - %(levelname)s - %(message)s')
 console = logging.StreamHandler()
 console.setLevel(logging.DEBUG)
-formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
-console.setFormatter(formatter)
 logging.getLogger('').addHandler(console)
 
 # Reused paths
@@ -42,15 +42,32 @@ if __name__ == "__main__":
 
     logger.info(f"Downloading: {link}")
     logger.info("More logs")
+    print("can you see me")
 
-    import time
-    time.sleep(5)
-
-    raise SystemExit(1)
-
+    # import time
+    # time.sleep(5)
+    #
+    # raise SystemExit(1)
+    #
     # Download
     youget(link)
     logger.info("Download complete")
+    print("Download complete")
+
+    @dataclass
+    class Args:
+        gpu = -1
+        pretrained_model = "models/baseline.pth"
+        input: str = None
+        sr: int = 44100
+        n_fft: int = 2048
+        hop_length: int = 1024
+        batchsize: int = 4
+        cropsize:int = 256
+        output_image: bool = False
+        postprocess: bool = False
+        tta: bool = False
+        output_dir: str = ""
 
     # Process downloaded files
     for file in raw_path.glob("*.mp4"):
@@ -58,7 +75,9 @@ if __name__ == "__main__":
         data = InferenceRequest(filename=str(file.with_suffix('')))
 
         # Run inference
-        run_inference(inference_data)
+        # run_inference(inference_data)
+        args = Args(input=inference_data.filename, output_dir="/home/nic/third-party/vocal-remover/downloads/raw/")
+        inference_main(args)
 
         # Convert mp4 to mp3
         convert_mp4(data)
