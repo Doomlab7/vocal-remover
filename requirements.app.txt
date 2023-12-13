@@ -4,3 +4,4 @@ uvicorn
 jinja2
 pydantic
 webdavclient3
+pytube
