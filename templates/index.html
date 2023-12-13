@@ -37,6 +37,39 @@
         box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
         text-align: center;
       }
+
+      .progress-bar {
+        height: 8px;
+        width: 100%;
+        background-color: #e0e0e0;
+        position: relative;
+        overflow: hidden;
+        border-radius: 4px;
+      }
+
+      .progress-bar::before {
+        content: "";
+        display: block;
+        height: 100%;
+        width: 200%; /* Change the width to twice the container width */
+        background: repeating-linear-gradient(
+          45deg,
+          #3498db,
+          #3498db 10px,
+          #e0e0e0 10px,
+          #e0e0e0 20px
+        );
+        animation: barberPole 12s linear infinite;
+      }
+
+      @keyframes barberPole {
+        from {
+          transform: translateX(-50%);
+        }
+        to {
+          transform: translateX(50%);
+        }
+      }
     </style>
   </head>
   <body>
@@ -46,7 +79,7 @@
           method="post"
           action="/submit_link/"
           enctype="multipart/form-data"
-          onsubmit="showModal()"
+          onsubmit="showModal(); startProgressBar()"
         >
           <label for="link" class="mb-2 text-lg text-gray-800"
             >Paste a link:</label
@@ -88,7 +121,25 @@
 
     <script>
       function showModal() {
+        console.log(
+          "Your link is being processed. You will be automatically redirected to Nextcloud when it is done. Sit tight!",
+        );
         document.getElementById("overlay").style.display = "flex";
+        startProgressBar();
+      }
+
+      function startProgressBar() {
+        // Check if a progress bar already exists
+        var existingProgressBar = document.querySelector(
+          ".modal .progress-bar",
+        );
+
+        if (!existingProgressBar) {
+          // Create and append the progress bar dynamically
+          var progressBar = document.createElement("div");
+          progressBar.className = "progress-bar";
+          document.querySelector(".modal").appendChild(progressBar);
+        }
       }
     </script>
   </body>
