@@ -19,9 +19,9 @@ URL = os.environ.get("NC_URL")
 USER = os.environ.get("NC_USER")
 
 # Configure logging to both console and a file
-logging.basicConfig(filename='downloader.main.log', level=logging.DEBUG, format='%(asctime)s - %(levelname)s - %(message)s')
+logging.basicConfig(filename='downloader.main.log', level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 console = logging.StreamHandler()
-console.setLevel(logging.DEBUG)
+console.setLevel(logging.INFO)
 logging.getLogger('').addHandler(console)
 
 # Reused paths
@@ -50,16 +50,16 @@ class Args:
 def main(args):
     link = DownloadRequest(link=args.link)
 
-    logger.info(f"Downloading: {link}")
-    logger.info("More logs")
+    logging.info(f"Downloading: {link}")
+
     # import time
-    # time.sleep(10)
+    # time.sleep(5)
     #
     # raise SystemExit(1)
     #
     # Download
     youget(link)
-    logger.info("Download complete")
+    logging.info("Download complete")
     print("Download complete")
 
 
@@ -95,7 +95,7 @@ def main(args):
     client.verify = True
     for file in to_upload_path.glob("*.mp3"):
         client.upload_file(remote_path=f"/{TARGET}/{file.name}", local_path=str(file))
-        logger.info(f"Uploaded: {file.name}")
+        logging.info(f"Uploaded: {file.name}")
         # Move file from to-upload to uploaded
         file.rename(uploaded_path / file.name)
 
@@ -103,11 +103,11 @@ def main(args):
     for file in raw_path.glob("*"):
         if file.suffix == ".mp4" or file.suffix == ".wav":
             file.unlink()
-            logger.info(f"Deleted: {file.name}")
+            logging.info(f"Deleted: {file.name}")
 
 if __name__ == "__main__":
 
-    logger = logging.getLogger(__name__)
+    logging = logging.getlogging(__name__)
 
     parser = ArgumentParser()
     parser.add_argument("link")
