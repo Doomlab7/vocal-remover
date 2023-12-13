@@ -7,7 +7,10 @@ import soundfile as sf
 import torch
 from tqdm import tqdm
 
-from lib import dataset, nets, spec_utils, utils
+from lib import dataset
+from lib import nets
+from lib import spec_utils
+from lib import utils
 
 
 class Separator(object):
@@ -105,21 +108,7 @@ class Separator(object):
         return y_spec, v_spec
 
 
-def main():
-    p = argparse.ArgumentParser()
-    p.add_argument("--gpu", "-g", type=int, default=-1)
-    p.add_argument("--pretrained_model", "-P", type=str, default="models/baseline.pth")
-    p.add_argument("--input", "-i", required=True)
-    p.add_argument("--sr", "-r", type=int, default=44100)
-    p.add_argument("--n_fft", "-f", type=int, default=2048)
-    p.add_argument("--hop_length", "-H", type=int, default=1024)
-    p.add_argument("--batchsize", "-B", type=int, default=4)
-    p.add_argument("--cropsize", "-c", type=int, default=256)
-    p.add_argument("--output_image", "-I", action="store_true")
-    p.add_argument("--postprocess", "-p", action="store_true")
-    p.add_argument("--tta", "-t", action="store_true")
-    p.add_argument("--output_dir", "-o", type=str, default="")
-    args = p.parse_args()
+def main(args):
 
     print("loading model...", end=" ")
     device = torch.device("cpu")
@@ -178,4 +167,18 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    p = argparse.ArgumentParser()
+    p.add_argument("--gpu", "-g", type=int, default=-1)
+    p.add_argument("--pretrained_model", "-P", type=str, default="models/baseline.pth")
+    p.add_argument("--input", "-i", required=True)
+    p.add_argument("--sr", "-r", type=int, default=44100)
+    p.add_argument("--n_fft", "-f", type=int, default=2048)
+    p.add_argument("--hop_length", "-H", type=int, default=1024)
+    p.add_argument("--batchsize", "-B", type=int, default=4)
+    p.add_argument("--cropsize", "-c", type=int, default=256)
+    p.add_argument("--output_image", "-I", action="store_true")
+    p.add_argument("--postprocess", "-p", action="store_true")
+    p.add_argument("--tta", "-t", action="store_true")
+    p.add_argument("--output_dir", "-o", type=str, default="")
+    args = p.parse_args()
+    main(args)
