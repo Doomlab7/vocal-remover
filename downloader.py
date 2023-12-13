@@ -25,27 +25,35 @@ console.setLevel(logging.DEBUG)
 logging.getLogger('').addHandler(console)
 
 # Reused paths
-downloads_path = Path("/home/nic/third-party/vocal-remover/downloads")
+downloads_path = Path("/home/nic/personal/vocal-remover/downloads")
 raw_path = downloads_path / "raw"
 mp3s_path = downloads_path / "mp3s"
 to_upload_path = mp3s_path / "to-upload"
 uploaded_path = mp3s_path / "uploaded"
 
-if __name__ == "__main__":
 
-    logger = logging.getLogger(__name__)
+@dataclass
+class Args:
+    gpu = -1
+    pretrained_model = "models/baseline.pth"
+    input: str = None
+    sr: int = 44100
+    n_fft: int = 2048
+    hop_length: int = 1024
+    batchsize: int = 4
+    cropsize:int = 256
+    output_image: bool = False
+    postprocess: bool = False
+    tta: bool = False
+    output_dir: str = ""
 
-    parser = ArgumentParser()
-    parser.add_argument("link")
-    args = parser.parse_args()
+def main(args):
     link = DownloadRequest(link=args.link)
 
     logger.info(f"Downloading: {link}")
     logger.info("More logs")
-    print("can you see me")
-
     # import time
-    # time.sleep(5)
+    # time.sleep(10)
     #
     # raise SystemExit(1)
     #
@@ -54,20 +62,6 @@ if __name__ == "__main__":
     logger.info("Download complete")
     print("Download complete")
 
-    @dataclass
-    class Args:
-        gpu = -1
-        pretrained_model = "models/baseline.pth"
-        input: str = None
-        sr: int = 44100
-        n_fft: int = 2048
-        hop_length: int = 1024
-        batchsize: int = 4
-        cropsize:int = 256
-        output_image: bool = False
-        postprocess: bool = False
-        tta: bool = False
-        output_dir: str = ""
 
     # Process downloaded files
     for file in raw_path.glob("*.mp4"):
@@ -76,7 +70,7 @@ if __name__ == "__main__":
 
         # Run inference
         # run_inference(inference_data)
-        args = Args(input=inference_data.filename, output_dir="/home/nic/third-party/vocal-remover/downloads/raw/")
+        args = Args(input=inference_data.filename, output_dir="/home/nic/personal/vocal-remover/downloads/raw/")
         inference_main(args)
 
         # Convert mp4 to mp3
@@ -110,3 +104,12 @@ if __name__ == "__main__":
         if file.suffix == ".mp4" or file.suffix == ".wav":
             file.unlink()
             logger.info(f"Deleted: {file.name}")
+
+if __name__ == "__main__":
+
+    logger = logging.getLogger(__name__)
+
+    parser = ArgumentParser()
+    parser.add_argument("link")
+    args = parser.parse_args()
+    main(args)
