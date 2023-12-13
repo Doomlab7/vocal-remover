@@ -19,7 +19,7 @@ USER = os.environ.get("NC_USER")
 # Configure logging to both console and a file
 logging.basicConfig(filename='app.log', level=logging.DEBUG)
 console = logging.StreamHandler()
-console.setLevel(logging.INFO)
+console.setLevel(logging.DEBUG)
 formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
 console.setFormatter(formatter)
 logging.getLogger('').addHandler(console)
