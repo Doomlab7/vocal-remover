@@ -107,7 +107,7 @@ async def submit_link(link: str = Form(...), request: Request = None):
     return HTMLResponse(content=f"""
         <html>
             <head>
-                <title>FastAPI Submission Box</title>
+                <title>Download Convert Upload</title>
             </head>
             <body>
                 <script>
