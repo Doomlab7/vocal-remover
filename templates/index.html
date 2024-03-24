@@ -1,146 +1,132 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Download Convert Upload</title>
-    <link
-      href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css"
-      rel="stylesheet"
-    />
-    <style>
-      body {
-        background: linear-gradient(to right, #4caf50, #2c3e50);
-        min-height: 100vh;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        margin: 0;
-      }
 
-      .overlay {
-        display: none;
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: rgba(0, 0, 0, 0.5);
-        justify-content: center;
-        align-items: center;
-      }
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="icon" href="/static/favicon.ico" type="favicon">
+  <title>Download Convert Upload</title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet" />
+  <style>
+    body {
+      background: linear-gradient(to right, #4caf50, #2c3e50);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0;
+    }
 
-      .modal {
-        background: #fff;
-        padding: 20px;
-        border-radius: 8px;
-        box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
-        text-align: center;
-      }
+    .overlay {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.5);
+      justify-content: center;
+      align-items: center;
+    }
 
-      .progress-bar {
-        height: 8px;
-        width: 100%;
-        background-color: #e0e0e0;
-        position: relative;
-        overflow: hidden;
-        border-radius: 4px;
-      }
+    .modal {
+      background: #fff;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+      text-align: center;
+    }
 
-      .progress-bar::before {
-        content: "";
-        display: block;
-        height: 100%;
-        width: 200%; /* Change the width to twice the container width */
-        background: repeating-linear-gradient(
-          45deg,
+    .progress-bar {
+      height: 8px;
+      width: 100%;
+      background-color: #e0e0e0;
+      position: relative;
+      overflow: hidden;
+      border-radius: 4px;
+    }
+
+    .progress-bar::before {
+      content: "";
+      display: block;
+      height: 100%;
+      width: 200%;
+      /* Change the width to twice the container width */
+      background: repeating-linear-gradient(45deg,
           #3498db,
           #3498db 10px,
           #e0e0e0 10px,
-          #e0e0e0 20px
-        );
-        animation: barberPole 12s linear infinite;
+          #e0e0e0 20px);
+      animation: barberPole 12s linear infinite;
+    }
+
+    @keyframes barberPole {
+      from {
+        transform: translateX(-50%);
       }
 
-      @keyframes barberPole {
-        from {
-          transform: translateX(-50%);
-        }
-        to {
-          transform: translateX(50%);
-        }
+      to {
+        transform: translateX(50%);
       }
-    </style>
-  </head>
-  <body>
-    <div class="container mx-auto p-4">
-      <div class="form-container bg-white p-8 rounded-lg shadow-md">
-        <form
-          method="post"
-          action="/submit_link/"
-          enctype="multipart/form-data"
-          onsubmit="showModal(); startProgressBar()"
-        >
-          <label for="link" class="mb-2 text-lg text-gray-800"
-            >Paste a link:</label
-          >
-          <input
-            type="text"
-            id="link"
-            name="link"
-            required
-            class="border rounded p-2 mb-4 w-full"
-          />
-          <button
-            type="submit"
-            class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600"
-          >
-            Submit
-          </button>
-        </form>
-      </div>
+    }
+  </style>
+</head>
 
-      <div class="overlay" id="overlay">
-        <div class="modal">
-          <p>
-            Your link is being processed. You will be automatically redirected
-            to Nextcloud when it is done. Sit tight!
-          </p>
-        </div>
-      </div>
-
-      {% if output or error %}
-      <div class="mt-8">
-        <h2 class="text-lg font-semibold text-white">Output:</h2>
-        <pre class="bg-gray-200 p-4 rounded">{{ output }}</pre>
-        <h2 class="text-lg font-semibold mt-4 text-white">Error:</h2>
-        <pre class="bg-red-200 p-4 rounded">{{ error }}</pre>
-      </div>
-      {% endif %}
+<body>
+  <div class="container mx-auto p-4">
+    <div class="form-container bg-white p-8 rounded-lg shadow-md">
+      <form method="post" action="/submit_link/" enctype="multipart/form-data"
+        onsubmit="showModal(); startProgressBar()">
+        <label for="link" class="mb-2 text-lg text-gray-800">Paste a link:</label>
+        <input type="text" id="link" name="link" required class="border rounded p-2 mb-4 w-full" />
+        <button type="submit" class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600">
+          Submit
+        </button>
+      </form>
     </div>
 
-    <script>
-      function showModal() {
-        console.log(
-          "Your link is being processed. You will be automatically redirected to Nextcloud when it is done. Sit tight!",
-        );
-        document.getElementById("overlay").style.display = "flex";
-        startProgressBar();
-      }
+    <div class="overlay" id="overlay">
+      <div class="modal">
+        <p>
+          Your link is being processed. You will be automatically redirected
+          to Nextcloud when it is done. Sit tight!
+        </p>
+      </div>
+    </div>
 
-      function startProgressBar() {
-        // Check if a progress bar already exists
-        var existingProgressBar = document.querySelector(
-          ".modal .progress-bar",
-        );
+    {% if output or error %}
+    <div class="mt-8">
+      <h2 class="text-lg font-semibold text-white">Output:</h2>
+      <pre class="bg-gray-200 p-4 rounded">{{ output }}</pre>
+      <h2 class="text-lg font-semibold mt-4 text-white">Error:</h2>
+      <pre class="bg-red-200 p-4 rounded">{{ error }}</pre>
+    </div>
+    {% endif %}
+  </div>
 
-        if (!existingProgressBar) {
-          // Create and append the progress bar dynamically
-          var progressBar = document.createElement("div");
-          progressBar.className = "progress-bar";
-          document.querySelector(".modal").appendChild(progressBar);
-        }
+  <script>
+    function showModal() {
+      console.log(
+        "Your link is being processed. You will be automatically redirected to Nextcloud when it is done. Sit tight!",
+      );
+      document.getElementById("overlay").style.display = "flex";
+      startProgressBar();
+    }
+
+    function startProgressBar() {
+      // Check if a progress bar already exists
+      var existingProgressBar = document.querySelector(
+        ".modal .progress-bar",
+      );
+
+      if (!existingProgressBar) {
+        // Create and append the progress bar dynamically
+        var progressBar = document.createElement("div");
+        progressBar.className = "progress-bar";
+        document.querySelector(".modal").appendChild(progressBar);
       }
-    </script>
-  </body>
+    }
+  </script>
+</body>
+
 </html>
