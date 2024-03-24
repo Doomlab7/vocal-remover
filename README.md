@@ -1,3 +1,10 @@
+# Vocal Remover + App
+
+I've added some scripts that make my usage of this tool easier - they are used in combination with the `Justfile`
+
+Also there's `app.py` which is a FastAPI app + tailwind front end that allows someone to drop a youtube link, and get the song downloaded with vocals split uploaded to a nextcloud instnace over WebDAV
+
+# OG README BELOW
 # vocal-remover
 
 [![Release](https://img.shields.io/github/release/tsurumeso/vocal-remover.svg)](https://github.com/tsurumeso/vocal-remover/releases/latest)
