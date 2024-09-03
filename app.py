@@ -115,6 +115,7 @@ async def submit_link(link: str = Form(...), request: Request = None):
 
     except Exception as e:
         error = str(e)
+        logging.error(error)
 
     # You can customize the reroute URL based on the result of your script
     reroute_url = os.environ.get("REROUTE_URL") if not error else "/error"
