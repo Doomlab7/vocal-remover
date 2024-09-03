@@ -1,7 +1,8 @@
 build:
   runs-on: ubuntu-latest
   env:
-    isMain: ${{ github.ref == 'refs/heads/main' }}
+    # TODO: using my branch - might be worth cleaning up
+    isMain: ${{ github.ref == 'refs/heads/nic' }}
     registry: docker.io
     targetRepo: pypeaday/vocal-remover-app
 
