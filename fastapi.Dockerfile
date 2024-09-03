@@ -1,7 +1,7 @@
 # FROM python:3.10-slim
 FROM pytorch/pytorch
 
-RUN apt-get update && apt-get install ffmpeg libsm6 libxext6  -y \
+RUN apt-get update && apt-get install git ffmpeg libsm6 libxext6  -y \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
