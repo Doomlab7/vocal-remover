@@ -11,7 +11,6 @@ URL = os.environ.get("NC_URL")
 USER = os.environ.get("NC_USER")
 
 if __name__ == "__main__":
-
     options = {
         "webdav_hostname": URL,
         "webdav_login": USER,
@@ -20,7 +19,11 @@ if __name__ == "__main__":
     client = Client(options)
     client.verify = True
     # breakpoint()
-    for file in Path("/home/nic/personal/vocal-remover/downloads/mp3s/to-upload/").glob("*.mp3"):
+    for file in Path("/home/nic/personal/vocal-remover/downloads/mp3s/to-upload/").glob(
+        "*.mp3"
+    ):
         client.upload_file(remote_path=f"/{TARGET}/{file.name}", local_path=str(file))
         # move file from to-upload to uploaded
-        file.rename(Path("/home/nic/personal/vocal-remover/downloads/mp3s/uploaded") / file.name)
+        file.rename(
+            Path("/home/nic/personal/vocal-remover/downloads/mp3s/uploaded") / file.name
+        )

@@ -109,7 +109,6 @@ class Separator(object):
 
 
 def main(args):
-
     print("loading model...", end=" ")
     device = torch.device("cpu")
     model = nets.CascadedNet(args.n_fft)

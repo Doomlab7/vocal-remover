@@ -19,10 +19,14 @@ URL = os.environ.get("NC_URL")
 USER = os.environ.get("NC_USER")
 
 # Configure logging to both console and a file
-logging.basicConfig(filename='downloader.main.log', level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+logging.basicConfig(
+    filename="downloader.main.log",
+    level=logging.INFO,
+    format="%(asctime)s - %(levelname)s - %(message)s",
+)
 console = logging.StreamHandler()
 console.setLevel(logging.INFO)
-logging.getLogger('').addHandler(console)
+logging.getLogger("").addHandler(console)
 
 # Reused paths
 downloads_path = Path("/home/nic/personal/vocal-remover/downloads")
@@ -41,11 +45,12 @@ class Args:
     n_fft: int = 2048
     hop_length: int = 1024
     batchsize: int = 4
-    cropsize:int = 256
+    cropsize: int = 256
     output_image: bool = False
     postprocess: bool = False
     tta: bool = False
     output_dir: str = ""
+
 
 def main(args):
     link = DownloadRequest(link=args.link)
@@ -62,22 +67,24 @@ def main(args):
     logging.info("Download complete")
     print("Download complete")
 
-
     # Process downloaded files
     for file in raw_path.glob("*.mp4"):
         inference_data = InferenceRequest(filename=str(file))
-        data = InferenceRequest(filename=str(file.with_suffix('')))
+        data = InferenceRequest(filename=str(file.with_suffix("")))
 
         # Run inference
         # run_inference(inference_data)
-        args = Args(input=inference_data.filename, output_dir="/home/nic/personal/vocal-remover/downloads/raw/")
+        args = Args(
+            input=inference_data.filename,
+            output_dir="/home/nic/personal/vocal-remover/downloads/raw/",
+        )
         inference_main(args)
 
         # Convert mp4 to mp3
         convert_mp4(data)
 
     for file in raw_path.glob("*_Instruments.wav"):
-        data = InferenceRequest(filename=str(file.with_suffix('')))
+        data = InferenceRequest(filename=str(file.with_suffix("")))
         # Convert _instruments.wav to _instruments.mp3
         convert_wav(data)
 
@@ -105,8 +112,8 @@ def main(args):
             file.unlink()
             logging.info(f"Deleted: {file.name}")
 
-if __name__ == "__main__":
 
+if __name__ == "__main__":
     logging = logging.getlogging(__name__)
 
     parser = ArgumentParser()

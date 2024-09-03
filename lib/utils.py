@@ -20,7 +20,7 @@ def imwrite(filename, img, params=None):
         result, n = cv2.imencode(ext, img, params)
 
         if result:
-            with open(filename, mode='w+b') as f:
+            with open(filename, mode="w+b") as f:
                 n.tofile(f)
             return True
         else:
