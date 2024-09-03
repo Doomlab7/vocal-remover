@@ -6,7 +6,7 @@ COPY . .
 
 RUN python3 -m pip install uv
 
-ENV PATH=/app/.venv:$PATH
+ENV PATH=/app/.venv/bin:$PATH
 ENV VIRTUAL_ENVIRONMENT=/app/.venv
 RUN uv venv
 
