@@ -100,6 +100,7 @@ async def run_main_in_background(args):
 @app.post("/submit_link/", response_class=HTMLResponse)
 async def submit_link(link: str = Form(...), request: Request = None):
     error = None
+    # TODO: multiple links
     try:
         if link is None:
             raise ValueError("Link is missing")
