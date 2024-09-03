@@ -17,9 +17,7 @@ URL = os.environ.get("NC_URL")
 USER = os.environ.get("NC_USER")
 
 if __name__ == "__main__":
-    for file in Path(
-        "/home/nic/personal/vocal-remover/downloads/just-split-convert"
-    ).glob("*.mp3"):
+    for file in Path("/app/downloads/just-split-convert").glob("*.mp3"):
         inference_data = InferenceRequest(filename=str(file))
         data = InferenceRequest(filename=str(file.with_suffix("")))
         # check if already done for some reason
@@ -28,9 +26,7 @@ if __name__ == "__main__":
             continue
         # run inference
         run_inference(inference_data)
-    for file in Path(
-        "/home/nic/personal/vocal-remover/downloads/just-split-convert"
-    ).glob("*_Instruments.wav"):
+    for file in Path("/app/downloads/just-split-convert").glob("*_Instruments.wav"):
         # check if file with .mp3 extension exists
         if file.name.endswith(".mp3"):
             print(f"Skipping: {file.name}")
@@ -47,15 +43,9 @@ if __name__ == "__main__":
     client = Client(options)
     client.verify = True
     # breakpoint()
-    for file in Path(
-        "/home/nic/personal/vocal-remover/downloads/just-split-convert/"
-    ).glob("*_Instruments.mp3"):
+    for file in Path("/app/downloads/just-split-convert/").glob("*_Instruments.mp3"):
         client.upload_file(remote_path=f"/{TARGET}/{file.name}", local_path=str(file))
-    for file in Path(
-        "/home/nic/personal/vocal-remover/downloads/just-split-convert/"
-    ).glob("*.mp3"):
+    for file in Path("/app/downloads/just-split-convert/").glob("*.mp3"):
         file.unlink()
-    for file in Path(
-        "/home/nic/personal/vocal-remover/downloads/just-split-convert/"
-    ).glob("*.wav"):
+    for file in Path("/app/downloads/just-split-convert/").glob("*.wav"):
         file.unlink()

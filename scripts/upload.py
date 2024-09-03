@@ -19,11 +19,7 @@ if __name__ == "__main__":
     client = Client(options)
     client.verify = True
     # breakpoint()
-    for file in Path("/home/nic/personal/vocal-remover/downloads/mp3s/to-upload/").glob(
-        "*.mp3"
-    ):
+    for file in Path("/app/downloads/mp3s/to-upload/").glob("*.mp3"):
         client.upload_file(remote_path=f"/{TARGET}/{file.name}", local_path=str(file))
         # move file from to-upload to uploaded
-        file.rename(
-            Path("/home/nic/personal/vocal-remover/downloads/mp3s/uploaded") / file.name
-        )
+        file.rename(Path("/app/downloads/mp3s/uploaded") / file.name)

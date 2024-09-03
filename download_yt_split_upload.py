@@ -29,7 +29,7 @@ console.setLevel(logging.INFO)
 logging.getLogger("").addHandler(console)
 
 # Reused paths
-downloads_path = Path("/home/nic/personal/vocal-remover/downloads")
+downloads_path = Path("/app/downloads")
 raw_path = downloads_path / "raw"
 mp3s_path = downloads_path / "mp3s"
 to_upload_path = mp3s_path / "to-upload"
@@ -76,7 +76,7 @@ def main(args):
         # run_inference(inference_data)
         args = Args(
             input=inference_data.filename,
-            output_dir="/home/nic/personal/vocal-remover/downloads/raw/",
+            output_dir="/app/downloads/raw/",
         )
         inference_main(args)
 

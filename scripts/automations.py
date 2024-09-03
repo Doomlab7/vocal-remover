@@ -67,7 +67,7 @@ def youget(data: DownloadRequest):
         filepath = (
             pytube.YouTube(data.link)
             .streams.get_by_itag(itag)
-            .download("/home/nic/personal/vocal-remover/downloads/raw")
+            .download("/app/downloads/raw")
         )
 
         return {"message": f"File downloaded: {filepath}"}
@@ -80,7 +80,7 @@ def youget(data: DownloadRequest):
 def run_inference(data: InferenceRequest):
     # replace this with just imoprting the inference.main function - nesting in scripts/ made the import here basically impossible
     filename = data.filename
-    inference_script = "/home/nic/personal/vocal-remover/.venv/vocal-remover/bin/python /home/nic/personal/vocal-remover/inference.py --output_dir /home/nic/personal/vocal-remover/downloads/just-split-convert/"
+    inference_script = "/app/.venv/vocal-remover/bin/python /app/inference.py --output_dir /app/downloads/just-split-convert/"
 
     # Run the inference script
     try:
