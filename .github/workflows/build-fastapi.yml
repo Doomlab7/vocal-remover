@@ -1,3 +1,4 @@
+name: Build FastAPI App
 on:
   workflow_dispatch:
   push:
