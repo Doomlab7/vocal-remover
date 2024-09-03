@@ -39,7 +39,7 @@ def convert_mp4(data: InferenceRequest):
 
     # Run ffmpeg command to convert mp4 to mp3
     try:
-        subprocess.run(f"ffmpeg -i {mp4} {mp3}", shell=True, check=True)
+        subprocess.run(f"ffmpeg -y -i {mp4} {mp3}", shell=True, check=True)
         return {"message": f"FFmpeg conversion completed for {filename}"}
     except subprocess.CalledProcessError:
         raise HTTPException(status_code=500, detail="Error running ffmpeg command")
@@ -53,7 +53,7 @@ def convert_wav(data: InferenceRequest):
     # Run ffmpeg command to convert wav to mp3
     try:
         subprocess.run(
-            f"ffmpeg -i {instruments_wav} {instruments_mp3}", shell=True, check=True
+            f"ffmpeg -y -i {instruments_wav} {instruments_mp3}", shell=True, check=True
         )
         return {"message": f"FFmpeg conversion completed for {filename}"}
     except subprocess.CalledProcessError:
