@@ -101,22 +101,23 @@ async def run_main_in_background(args):
 async def submit_link(link: str = Form(...), request: Request = None):
     error = None
     # TODO: multiple links
-    try:
-        if link is None:
-            raise ValueError("Link is missing")
+    for _link in link.split(","):
+        try:
+            if _link is None:
+                raise ValueError("Link is missing")
 
-        args = Args(link=link)
+            args = Args(link=_link)
 
-        # Use the BackgroundTasks to add the run_main_in_background to the background tasks
-        # background_tasks.add_task(run_main_in_background, a)
+            # Use the BackgroundTasks to add the run_main_in_background to the background tasks
+            # background_tasks.add_task(run_main_in_background, a)
 
-        from download_yt_split_upload import main
+            from download_yt_split_upload import main
 
-        main(args)
+            main(args)
 
-    except Exception as e:
-        error = str(e)
-        logging.error(error)
+        except Exception as e:
+            error = str(e)
+            logging.error(error)
 
     # You can customize the reroute URL based on the result of your script
     reroute_url = os.environ.get("REROUTE_URL") if not error else "/error"
