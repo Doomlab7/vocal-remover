@@ -6,7 +6,8 @@ COPY . .
 
 RUN python3 -m pip install uv
 
-ENV VIRTUALENV=/app/.venv
+ENV PATH=/app/.venv:$PATH
+ENV VIRTUAL_ENVIRONMENT=/app/.venv
 RUN uv venv
 
 RUN uv pip install -r requirements.app.txt -n
