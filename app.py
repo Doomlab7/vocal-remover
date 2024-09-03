@@ -44,27 +44,27 @@ def log_to_queue(record):
     logging_queue.put_nowait(record)
 
 
-async def run_subprocess_and_capture_output(link):
-    process = await asyncio.create_subprocess_shell(
-        f"python downloader.py {link}",
-        stdout=asyncio.subprocess.PIPE,
-        stderr=asyncio.subprocess.PIPE,
-    )
+# async def run_subprocess_and_capture_output(link):
+#     process = await asyncio.create_subprocess_shell(
+#         f"python downloader.py {link}",
+#         stdout=asyncio.subprocess.PIPE,
+#         stderr=asyncio.subprocess.PIPE,
+#     )
 
-    while True:
-        stdout_data = await process.stdout.read(100)
-        stderr_data = await process.stderr.read(100)
+#     while True:
+#         stdout_data = await process.stdout.read(100)
+#         stderr_data = await process.stderr.read(100)
 
-        if not stdout_data and not stderr_data:
-            break
+#         if not stdout_data and not stderr_data:
+#             break
 
-        if stdout_data:
-            log_to_queue(f"stdout: {stdout_data.decode()}")
-        if stderr_data:
-            log_to_queue(f"stderr: {stderr_data.decode()}")
+#         if stdout_data:
+#             log_to_queue(f"stdout: {stdout_data.decode()}")
+#         if stderr_data:
+#             log_to_queue(f"stderr: {stderr_data.decode()}")
 
-    return_code = await process.wait()
-    log_to_queue(f"Subprocess finished with return code: {return_code}")
+#     return_code = await process.wait()
+#     log_to_queue(f"Subprocess finished with return code: {return_code}")
 
 
 # Assuming you have a function to get a FastAPI request instance, if not you can remove it.
