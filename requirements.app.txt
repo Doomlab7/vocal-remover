@@ -4,4 +4,6 @@ uvicorn
 jinja2
 pydantic
 webdavclient3
-pytube
+# pytube
+# use my fork where I added a few regex fixes for some issues due to pytube not being maintained
+git+https://github.com/pypeaday/pytube.git@fix/multiple-match-throttling-regex
