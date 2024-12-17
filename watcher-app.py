@@ -109,7 +109,7 @@ def additional_logic(file: Path):
     logging.info(f"Running additional logic on file: {file}")
     try:
         inference_data = InferenceRequest(filename=str(file))
-        run_inference(inference_data, output_dir=OUTPUT_DIR)
+        run_inference(inference_data)
 
         instrumental_file = f"{OUTPUT_DIR}/{file.stem}_Instruments.mp3"
         instrumental_wav = f"{OUTPUT_DIR}/{file.stem}_Instruments.wav"
