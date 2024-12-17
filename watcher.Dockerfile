@@ -7,8 +7,6 @@ RUN apt-get update && apt-get install git ffmpeg libsm6 libxext6  -y \
 
 WORKDIR /app
 
-COPY . .
-
 COPY --from=ghcr.io/astral-sh/uv:latest /uv /usr/local/bin/uv
 
 ENV PATH=/app/.venv/bin:$PATH
@@ -16,7 +14,13 @@ RUN uv venv
 
 ENV VIRTUAL_ENVIRONMENT=/app/.venv
 # don't need the app ones, but I don't want to refactor everything right now
+COPY requirements.watcher-app.txt .
+COPY requirements.app.txt .
+COPY requirements.txt .
 RUN uv pip install -r requirements.watcher-app.txt -r requirements.txt -r requirements.app.txt -n
+
+COPY . .
+
 
 ENTRYPOINT [ "python", "watcher-app.py" ]
 
