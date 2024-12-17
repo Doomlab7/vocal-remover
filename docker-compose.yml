@@ -4,8 +4,10 @@ services:
     container_name: olivet-youtube-watcher
     volumes:
       - /tank/encrypted/docker/pinchflat/downloads:/input:ro
-      - /tank/encrypted/docker/vocal_remover_app/watcher-app/processed_mp3s:/output # Mount OUTPUT_DIR from the host
+      - /tank/encrypted/docker/vocal_remover_app/watcher-app/processed_mp3s:/output
       - /tank/encrypted/docker/vocal_remover_app/watcher-app/db:/data
+      # TODO: comment out to not mount the code in and just use what's built
+      - /home/nic/projects/personal/vocal-remover/:/app
     working_dir: /app
     env_file:
       - /home/nic/projects/personal/vocal-remover/.env
