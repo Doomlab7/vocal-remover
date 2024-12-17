@@ -146,6 +146,18 @@ class FileHandler(FileSystemEventHandler):
             else:
                 print(f"Skipping already processed file: {file_path}")
 
+def process_existing_files():
+    """Process all existing .m4a files in WATCH_DIR and subdirectories."""
+    print("Checking for existing files...")
+    root_dir = Path(WATCH_DIR)
+    for file_path in root_dir.rglob("*.m4a"):  # Recursively find all .m4a files
+        if not is_processed(str(file_path)):
+            print(f"Processing missed file: {file_path}")
+            process_file(str(file_path))
+            mark_as_processed(str(file_path))
+        else:
+            print(f"Skipping already processed file: {file_path}")
+
 def main():
     """Main function to watch for new files."""
     if not WATCH_DIR or not OUTPUT_DIR or not DB_PATH:
@@ -153,6 +165,7 @@ def main():
         return
 
     init_db()
+    process_existing_files()  # Check and process any missed files at startup
 
     Path(OUTPUT_DIR).mkdir(parents=True, exist_ok=True)  # Ensure output directory exists
     event_handler = FileHandler()
