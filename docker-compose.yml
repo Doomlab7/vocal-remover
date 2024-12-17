@@ -7,6 +7,8 @@ services:
       - /tank/encrypted/docker/vocal_remover_app/watcher-app/processed_mp3s:/output # Mount OUTPUT_DIR from the host
       - /tank/encrypted/docker/vocal_remover_app/watcher-app/db:/data
     working_dir: /app
+    env_file:
+      - /home/nic/projects/personal/vocal-remover/.env
     environment:
       - WATCH_DIR=/input/Olivet Bible - Under Review
       - OUTPUT_DIR=/output
