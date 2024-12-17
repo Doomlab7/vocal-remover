@@ -110,12 +110,21 @@ def additional_logic(file: Path):
     try:
         inference_data = InferenceRequest(filename=str(file))
         run_inference(inference_data, output_dir=OUTPUT_DIR)
+
+        instrumental_file = f"{OUTPUT_DIR}/{file.stem}_Instruments.mp3"
+        instrumental_wav = f"{OUTPUT_DIR}/{file.stem}_Instruments.wav"
+        # convert instrumental file to mp3
+        logging.info(f"Transcoding {instrumental_file_wav} to {instrumental_file}...")
+        try:
+            audio = AudioSegment.from_file(instrumental_wav, format="wav")
+            audio.export(instrumental_file, format="mp3")
+            logging.info(f"Transcoding completed: {instrumental_file}")
+        except Exception as e:
+            logging.info(f"Error transcoding {instrumental_file_wav} to MP3: {e}")
         
         # Upload files
         client.upload_file(remote_path=f"/{TARGET}/{file.name}", local_path=str(file))
         logging.info(f"File uploaded: {file}")
-
-        instrumental_file = f"{OUTPUT_DIR}/{file.stem}_Instruments.mp3"
         
         client.upload_file(remote_path=f"/{TARGET}/{file.stem}_Instruments.mp3", local_path=str(instrumental_file))
         logging.info(f"Instrumental uploaded: {file.stem}_Instruments.mp3")

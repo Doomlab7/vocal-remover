@@ -1,4 +1,5 @@
 import re
+import os
 import subprocess
 from typing import List
 from typing import Optional
@@ -7,6 +8,7 @@ import pytube
 from fastapi import HTTPException
 from pydantic import BaseModel
 
+OUTPUT_DIR = os.environ.get("OUTPUT_DIR")
 
 class DownloadRequest(BaseModel):
     link: str
@@ -77,12 +79,12 @@ def youget(data: DownloadRequest):
         )
 
 
-def run_inference(data: InferenceRequest, output_dir: str):
+def run_inference(data: InferenceRequest):
     # replace this with just imoprting the inference.main function - nesting in scripts/ made the import here basically impossible
     filename = data.filename
     # inference_script = "/app/.venv/vocal-remover/bin/python /app/inference.py --output_dir /app/downloads/just-split-convert/"
     inference_script = (
-        f".venv/bin/python ./inference.py --output_dir {output_dir}/"
+        f".venv/bin/python ./inference.py --output_dir {OUTPUT_DIR}/"
     )
 
     # Run the inference script
