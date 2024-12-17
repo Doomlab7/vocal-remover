@@ -15,7 +15,8 @@ ENV PATH=/app/.venv/bin:$PATH
 RUN uv venv
 
 ENV VIRTUAL_ENVIRONMENT=/app/.venv
-RUN uv pip install -r requirements.watcher-app.txt -r requirements.txt -n
+# don't need the app ones, but I don't want to refactor everything right now
+RUN uv pip install -r requirements.watcher-app.txt -r requirements.txt -r requirements.app.txt -n
 
 ENTRYPOINT [ "python", "watcher-app.py" ]
 
