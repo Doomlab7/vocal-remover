@@ -1,3 +1,7 @@
+# File Watcher Workflow
+
+The FastAPI App is dead, using pinchflat to download now to disk and a watcher app in this repo, spun up as a compose stack, to just monitor the folder and persorm the instrumental split and upload to Under Review folder in nextcloud
+
 # Vocal Remover + App
 
 I've added some scripts that make my usage of this tool easier - they are used in combination with the `Justfile`

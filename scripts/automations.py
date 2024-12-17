@@ -80,7 +80,10 @@ def youget(data: DownloadRequest):
 def run_inference(data: InferenceRequest):
     # replace this with just imoprting the inference.main function - nesting in scripts/ made the import here basically impossible
     filename = data.filename
-    inference_script = "/app/.venv/vocal-remover/bin/python /app/inference.py --output_dir /app/downloads/just-split-convert/"
+    # inference_script = "/app/.venv/vocal-remover/bin/python /app/inference.py --output_dir /app/downloads/just-split-convert/"
+    inference_script = (
+        ".venv/bin/python ./inference.py --output_dir ./downloads/just-split-convert/"
+    )
 
     # Run the inference script
     try:
