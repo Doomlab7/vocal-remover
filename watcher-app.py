@@ -14,7 +14,7 @@ from pydub import AudioSegment
 
 # Logging Configuration
 logging.basicConfig(
-    level=logging.DEBUG,  # Set to DEBUG for detailed logs
+    level=logging.INFO,  # Set to DEBUG for detailed logs
     format="%(asctime)s - %(levelname)s - %(message)s",
     handlers=[
         logging.StreamHandler()  # Log to stdout (captured by Docker)
