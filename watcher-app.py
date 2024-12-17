@@ -129,18 +129,20 @@ def process_file(file_path):
     else:
         logging.error(f"Failed to process file: {file_path}")
 
-
 class FileHandler(FileSystemEventHandler):
-    """Handler for file system events."""
     def on_created(self, event):
-        if not event.is_directory and event.src_path.endswith(".m4a"):
-            file_path = event.src_path
-            logging.info(f"New file detected: {file_path}")
-            if not is_processed(file_path):
-                process_file(file_path)
-            else:
-                logging.info(f"File already processed, skipping: {file_path}")
+        if event.is_directory:
+            return  # Skip directories
 
+        # Recursively check all subdirectories for .m4a files
+        root_dir = Path(WATCH_DIR)
+        for file_path in root_dir.rglob("*.m4a"):  # Recursively find all .m4a files
+            if not is_processed(str(file_path)):
+                print(f"New file detected: {file_path}")
+                process_file(str(file_path))
+                mark_as_processed(str(file_path))
+            else:
+                print(f"Skipping already processed file: {file_path}")
 
 def main():
     """Main function to watch for new files."""
