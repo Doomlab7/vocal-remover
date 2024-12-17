@@ -65,7 +65,6 @@ def main(args):
     # Download
     youget(link)
     logging.info("Download complete")
-    print("Download complete")
 
     # Process downloaded files
     for file in raw_path.glob("*.mp4"):
@@ -114,7 +113,7 @@ def main(args):
 
 
 if __name__ == "__main__":
-    logging = logging.getlogging(__name__)
+    logging = logging.getLogger(__name__)
 
     parser = ArgumentParser()
     parser.add_argument("link")
