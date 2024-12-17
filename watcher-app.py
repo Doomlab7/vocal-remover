@@ -1,4 +1,5 @@
 import os
+import re
 import sqlite3
 from pathlib import Path
 from watchdog.observers import Observer
@@ -86,21 +87,22 @@ def mark_as_processed(file_path):
     except Exception as e:
         logging.error(f"Failed to mark file as processed: {file_path}, Error: {e}")
 
-
 def transcode_to_mp3(m4a_path):
-    """Transcode .m4a to .mp3."""
-    file_name = Path(m4a_path).stem + ".mp3"
-    output_path = os.path.join(OUTPUT_DIR, file_name)
-    logging.info(f"Transcoding file {m4a_path} to {output_path}")
+    # Extract filename without hash
+    original_name = Path(m4a_path).stem
+    cleaned_name = re.sub(r'\s*\[.*?\]\s*', '', original_name).strip()  # Remove hash in square brackets
+    output_file = cleaned_name + ".mp3"
+    output_path = Path(OUTPUT_DIR) / output_file
+
+    logging.info(f"Transcoding {m4a_path} to {output_path}...")
     try:
         audio = AudioSegment.from_file(m4a_path, format="m4a")
         audio.export(output_path, format="mp3")
         logging.info(f"Transcoding completed: {output_path}")
-        return Path(output_path)
+        return output_path
     except Exception as e:
-        logging.error(f"Error transcoding {m4a_path} to MP3: {e}")
+        logging.info(f"Error transcoding {m4a_path} to MP3: {e}")
         return None
-
 
 def additional_logic(file: Path):
     """Run inference and upload files."""
