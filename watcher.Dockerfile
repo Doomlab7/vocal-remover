@@ -15,7 +15,7 @@ ENV PATH=/app/.venv/bin:$PATH
 RUN uv venv
 
 ENV VIRTUAL_ENVIRONMENT=/app/.venv
-RUN uv pip install -r requirements.watcher-app.txt -r requirements.txt -n
+RUN uv pip install -r requirements.watcher-app.txt -r requirements.txt --no-cache
 
 ENTRYPOINT [ "python", "watcher-app.py" ]
 
