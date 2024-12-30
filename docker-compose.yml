@@ -7,7 +7,8 @@ services:
       - /tank/encrypted/docker/vocal_remover_app/watcher-app/processed_mp3s:/output
       - /tank/encrypted/docker/vocal_remover_app/watcher-app/db:/data
       # TODO: comment out to not mount the code in and just use what's built
-      - /home/nic/projects/personal/vocal-remover/:/app
+      - /home/nic/projects/personal/vocal-remover/scripts/automations.py:/app/scripts/automations.py
+      - /home/nic/projects/personal/vocal-remover/watcher-app.py:/app/watcher-app.py
     working_dir: /app
     env_file:
       - /home/nic/projects/personal/vocal-remover/.env
